@@ -1,3 +1,5 @@
+package simulation2021.httpclient;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -60,7 +62,6 @@ public class HttpClient {
         return authKey;
     }
 
-    // 2021
     public JSONObject getLocations(String authKey) {
 
         HttpURLConnection connection = null;
@@ -146,6 +147,4 @@ public class HttpClient {
 
         return jsonObject;
     }
-
-    // 2022
 }

@@ -1,4 +1,4 @@
-package simulation2021;
+package simulation2021.dto;
 
 import java.util.ArrayList;
 import java.util.List;

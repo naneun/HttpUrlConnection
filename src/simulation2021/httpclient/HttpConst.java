@@ -1,8 +1,9 @@
+package simulation2021.httpclient;
+
 public class HttpConst {
 
     // Base URL
-//    private static final String BASE_URL = "https://huqeyhi95c.execute-api.ap-northeast-2.amazonaws.com/prod"; // 2022
-    public static final String BASE_URL = "https://kox947ka1a.execute-api.ap-northeast-2.amazonaws.com/prod/users"; // 2021
+    public static final String BASE_URL = "https://kox947ka1a.execute-api.ap-northeast-2.amazonaws.com/prod/users";
 
     // Header Value
     public static final String APPLICATION_JSON = "application/json";
