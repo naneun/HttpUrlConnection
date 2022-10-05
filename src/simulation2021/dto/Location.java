@@ -18,4 +18,12 @@ public class Location {
                 jsonObject.getInt("located_bikes_count")
         );
     }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "id=" + id +
+                ", locatedBikesCount=" + locatedBikesCount +
+                '}';
+    }
 }

@@ -1,5 +1,7 @@
 package simulation2021.dto;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,5 +17,26 @@ public class Command {
 
     public static Command of(Long truckId, List<Integer> commands) {
         return new Command(truckId, commands);
+    }
+
+    public JSONObject convertToJSONObject() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("truck_id", truckId);
+            if (commands != null) {
+                jsonObject.put("command", commands);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+    @Override
+    public String toString() {
+        return "Command{" +
+                "truckId=" + truckId +
+                ", commands=" + commands +
+                '}';
     }
 }

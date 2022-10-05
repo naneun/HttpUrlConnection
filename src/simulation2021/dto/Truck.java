@@ -21,4 +21,13 @@ public class Truck {
                 jsonObject.getInt("loaded_bikes_count")
         );
     }
+
+    @Override
+    public String toString() {
+        return "Truck{" +
+                "id=" + id +
+                ", locationId=" + locationId +
+                ", loadedBikesCount=" + loadedBikesCount +
+                '}';
+    }
 }

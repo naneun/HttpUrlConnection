@@ -1,14 +1,18 @@
 package simulation2021.httpclient;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+import simulation2021.dto.Command;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+import java.util.logging.Logger;
 
 public class HttpClient {
+
+    private static Logger logger = Logger.getLogger(HttpClient.class.getName());
 
     private final String baseUrl;
 
@@ -32,6 +36,21 @@ public class HttpClient {
                 }
                 jsonObject = new JSONObject(sb.toString());
             }
+            else if (responseCode == HttpConst.BAD_REQUEST) {
+                throw new RuntimeException("BAD_REQUEST");
+            }
+            else if (responseCode == HttpConst.UNAUTHORIZED) {
+                throw new RuntimeException("UNAUTHORIZED");
+            }
+            else if (responseCode == HttpConst.NOT_FOUND) {
+                throw new RuntimeException("NOT_FOUND");
+            }
+            else if (responseCode == HttpConst.INTERNAL_SERVER_ERROR) {
+                throw new RuntimeException("INTERNAL_SERVER_ERROR");
+            }
+            else {
+                throw new RuntimeException("UNKNOWN");
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -52,8 +71,8 @@ public class HttpClient {
             connection.setRequestProperty(HttpHeader.X_AUTH_TOKEN, xAuthToken);
             connection.setRequestProperty(HttpHeader.CONTENT_TYPE, HttpConst.APPLICATION_JSON);
 
-            JSONObject json = readMessage(connection);
-            authKey = json.getString(HttpConst.AUTH_KEY);
+            JSONObject responseJson = readMessage(connection);
+            authKey = responseJson.getString(HttpConst.AUTH_KEY);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -65,7 +84,7 @@ public class HttpClient {
     public JSONObject getLocations(String authKey) {
 
         HttpURLConnection connection = null;
-        JSONObject jsonObject = null;
+        JSONObject responseJson = null;
 
         try {
             URL url = new URL(baseUrl + HttpConst.LOCATIONS_PATH);
@@ -74,19 +93,19 @@ public class HttpClient {
             connection.setRequestProperty(HttpHeader.AUTHORIZATION, authKey);
             connection.setRequestProperty(HttpHeader.CONTENT_TYPE, HttpConst.APPLICATION_JSON);
 
-            jsonObject = readMessage(connection);
+            responseJson = readMessage(connection);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return jsonObject;
+        return responseJson;
     }
 
     public JSONObject getTrucks(String authKey) {
 
         HttpURLConnection connection = null;
-        JSONObject jsonObject = null;
+        JSONObject responseJson = null;
 
         try {
             URL url = new URL(baseUrl + HttpConst.TRUCKS_PATH);
@@ -95,42 +114,55 @@ public class HttpClient {
             connection.setRequestProperty(HttpHeader.AUTHORIZATION, authKey);
             connection.setRequestProperty(HttpHeader.CONTENT_TYPE, HttpConst.APPLICATION_JSON);
 
-            jsonObject = readMessage(connection);
+            responseJson = readMessage(connection);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return jsonObject;
+        return responseJson;
     }
 
-    public JSONObject simulate(String authKey) {
+    public JSONObject simulate(String authKey, List<Command> commands) {
 
         HttpURLConnection connection = null;
-        JSONObject jsonObject = null;
+        JSONObject responseJson = null;
 
         try {
             URL url = new URL(baseUrl + HttpConst.SIMULATE_PATH);
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(HttpMethod.GET);
+            connection.setRequestMethod(HttpMethod.PUT);
             connection.setRequestProperty(HttpHeader.AUTHORIZATION, authKey);
             connection.setRequestProperty(HttpHeader.CONTENT_TYPE, HttpConst.APPLICATION_JSON);
             connection.setDoInput(true);
             connection.setDoOutput(true);
 
-            jsonObject = readMessage(connection);
+            // Write
+            BufferedWriter bw = new BufferedWriter((new OutputStreamWriter(connection.getOutputStream())));
+            JSONObject requestJson = new JSONObject();
+
+            JSONArray commandArray = new JSONArray();
+            commands.forEach(command -> commandArray.put(command.convertToJSONObject()));
+            requestJson.put("commands", commandArray);
+
+            bw.write(requestJson.toString());
+            bw.flush();
+
+            responseJson = readMessage(connection);
+
+            logger.info(responseJson.toString());
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return jsonObject;
+        return responseJson;
     }
 
     public JSONObject getScore(String authKey) {
 
         HttpURLConnection connection = null;
-        JSONObject jsonObject = null;
+        JSONObject responseJson = null;
 
         try {
             URL url = new URL(baseUrl + HttpConst.SCORE_PATH);
@@ -139,12 +171,12 @@ public class HttpClient {
             connection.setRequestProperty(HttpHeader.AUTHORIZATION, authKey);
             connection.setRequestProperty(HttpHeader.CONTENT_TYPE, HttpConst.APPLICATION_JSON);
 
-            jsonObject = readMessage(connection);
+            responseJson = readMessage(connection);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return jsonObject;
+        return responseJson;
     }
 }
