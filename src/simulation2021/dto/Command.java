@@ -21,13 +21,9 @@ public class Command {
 
     public JSONObject convertToJSONObject() {
         JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("truck_id", truckId);
-            if (commands != null) {
-                jsonObject.put("command", commands);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        jsonObject.put("truck_id", truckId);
+        if (commands != null) {
+            jsonObject.put("command", commands);
         }
         return jsonObject;
     }

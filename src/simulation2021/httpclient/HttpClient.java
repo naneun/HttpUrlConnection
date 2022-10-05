@@ -75,7 +75,7 @@ public class HttpClient {
             authKey = responseJson.getString(HttpConst.AUTH_KEY);
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
         return authKey;
@@ -96,7 +96,7 @@ public class HttpClient {
             responseJson = readMessage(connection);
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
         return responseJson;
@@ -117,7 +117,7 @@ public class HttpClient {
             responseJson = readMessage(connection);
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
         return responseJson;
@@ -153,7 +153,7 @@ public class HttpClient {
             logger.info(responseJson.toString());
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
         return responseJson;
@@ -174,7 +174,7 @@ public class HttpClient {
             responseJson = readMessage(connection);
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
         return responseJson;

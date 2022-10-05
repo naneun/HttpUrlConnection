@@ -1,6 +1,9 @@
 package simulation2021;
 
 import simulation2021.dto.Command;
+import simulation2021.dto.Location;
+import simulation2021.dto.Simulation;
+import simulation2021.dto.Truck;
 import simulation2021.httpclient.HttpClient;
 import simulation2021.httpclient.HttpConst;
 import simulation2021.util.JSONParser;
@@ -17,12 +20,18 @@ public class Main {
     public static void main(String[] args) {
         HttpClient httpClient = new HttpClient(HttpConst.BASE_URL);
         String authToken = httpClient.getAuthKey(X_AUTH_TOKEN, 1L);
-        logger.info(JSONParser.getLocations(httpClient.getLocations(authToken)).toString());
-        logger.info(JSONParser.getTrucks(httpClient.getTrucks(authToken)).toString());
+
+        List<Location> location = JSONParser.getLocations(httpClient.getLocations(authToken));
+        logger.info(location.toString());
+
+        List<Truck> trucks = JSONParser.getTrucks(httpClient.getTrucks(authToken));
+        logger.info(trucks.toString());
 
         List<Command> commands = List.of(Command.of(1L, List.of(1, 2)));
-        logger.info(JSONParser.getSimulation(httpClient.simulate(authToken, commands)).toString());
+        Simulation simulation = JSONParser.getSimulation(httpClient.simulate(authToken, commands));
+        logger.info(simulation.toString());
 
-        logger.info(JSONParser.getScore(httpClient.getScore(authToken)).toString());
+        Double score = JSONParser.getScore(httpClient.getScore(authToken));
+        logger.info(score.toString());
     }
 }
